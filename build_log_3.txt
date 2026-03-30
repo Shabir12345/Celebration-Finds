@@ -1,0 +1,29 @@
+
+> web@0.1.0 build
+> next build
+
+ΓÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\shabi\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\shabi\Documents\FREEDOM\AI\Celebration Finds\package-lock.json
+
+Γû▓ Next.js 16.2.1 (Turbopack)
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 6.2s
+  Running TypeScript ...
+Failed to type check.
+
+./src/lib/stripe.ts:8:3
+Type error: Type '"2025-02-24-preview"' is not assignable to type '"2026-02-25.clover"'.
+
+   6 |
+   7 | export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+>  8 |   apiVersion: "2025-02-24-preview", // Use the latest API version
+     |   ^
+   9 |   typescript: true,
+  10 | });
+  11 |
+Next.js build worker exited with code: 1 and signal: null

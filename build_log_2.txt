@@ -1,0 +1,29 @@
+
+> web@0.1.0 build
+> next build
+
+ΓÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\shabi\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\shabi\Documents\FREEDOM\AI\Celebration Finds\package-lock.json
+
+Γû▓ Next.js 16.2.1 (Turbopack)
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 6.0s
+  Running TypeScript ...
+Failed to type check.
+
+./src/components/shop/ProductGrid.tsx:23:10
+Type error: Property 'id' is missing in type '{ key: string; name: string; slug: string; price: number; category: string; image: string; isFeatured: boolean | undefined; }' but required in type 'ProductCardProps'.
+
+  21 |     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md...
+  22 |       {products.map((product, idx) => (
+> 23 |         <ProductCard
+     |          ^
+  24 |           key={product.slug}
+  25 |           name={product.name}
+  26 |           slug={product.slug}
+Next.js build worker exited with code: 1 and signal: null

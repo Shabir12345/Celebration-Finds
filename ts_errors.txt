@@ -1,0 +1,56 @@
+src/components/shop/CartDrawer.tsx(50,36): error TS2339: Property 'items' does not exist on type 'unknown'.
+src/components/shop/fields/ColorSwatchPicker.tsx(51,9): error TS2322: Type '{ shake: { x: number[]; transition: { duration: number; ease: string; }; }; }' is not assignable to type 'Variants'.
+  Property 'shake' is incompatible with index signature.
+    Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'Variant'.
+      Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+src/components/shop/fields/DropdownSelector.tsx(46,9): error TS2322: Type '{ shake: { x: number[]; transition: { duration: number; ease: string; }; }; }' is not assignable to type 'Variants'.
+  Property 'shake' is incompatible with index signature.
+    Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'Variant'.
+      Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+src/components/shop/fields/PhotoUploadField.tsx(56,9): error TS2322: Type '{ shake: { x: number[]; transition: { duration: number; ease: string; }; }; }' is not assignable to type 'Variants'.
+  Property 'shake' is incompatible with index signature.
+    Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'Variant'.
+      Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+src/components/shop/fields/RibbonSelector.tsx(41,9): error TS2322: Type '{ shake: { x: number[]; transition: { duration: number; ease: string; }; }; }' is not assignable to type 'Variants'.
+  Property 'shake' is incompatible with index signature.
+    Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'Variant'.
+      Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+src/components/shop/fields/TextEngravingInput.tsx(59,9): error TS2322: Type '{ shake: { x: number[]; transition: { duration: number; ease: string; }; }; }' is not assignable to type 'Variants'.
+  Property 'shake' is incompatible with index signature.
+    Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'Variant'.
+      Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ x: number[]; transition: { duration: number; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
