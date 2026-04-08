@@ -45,11 +45,17 @@ export interface SchemaField {
   };
 }
 
+export interface CustomizationStep {
+  title: string;
+  description?: string;
+  fields: SchemaField[];
+}
+
 export interface CustomizationSchema {
   schema_id: string;
   product_id: string;
   product_type: string;
-  fields: SchemaField[];
+  steps: CustomizationStep[];
   pricing_rules?: PricingRule[];
 }
 
@@ -97,49 +103,82 @@ export type WizardAction =
 
 export const MOCK_CANDLE_SCHEMA: CustomizationSchema = {
   schema_id: "candle-v1",
-  product_id: "wedding-favour-candle",
+  product_id: "luxury-candle-set",
   product_type: "candle",
-  fields: [
+  steps: [
     {
-      field_key: "label_text",
-      field_type: "text",
-      label: "Type Your Names",
-      description: "This will be printed on your candle label.",
-      placeholder: "e.g. Sarah & Mark · June 2025",
-      is_required: true,
-      validation: { max_length: 40 },
-      display_order: 1,
+      title: "Select Your Aesthetics",
+      description: "First, let's pick the visual details of your gift.",
+      fields: [
+        {
+          field_key: "ribbon_color",
+          field_type: "color_swatch",
+          label: "Ribbon Colour",
+          description: "Choose a velvet ribbon to finish your package.",
+          is_required: true,
+          options: [
+             { value: "#F5F0EB", label: "Warm Ivory", hexColor: "#F5F0EB", stockAvailable: true },
+             { value: "#D4B8C7", label: "Soft Pink", hexColor: "#D4B8C7", stockAvailable: true },
+             { value: "#5D3754", label: "Deep Berry", hexColor: "#5D3754", stockAvailable: true },
+             { value: "#2D4B3F", label: "Forest Green", hexColor: "#2D4B3F", stockAvailable: true },
+          ],
+          display_order: 1,
+        }
+      ]
     },
     {
-      field_key: "ribbon_color",
-      field_type: "color_swatch",
-      label: "Pick Your Velvet Ribbon Color",
-      is_required: true,
-      options: [
-        { value: "#F5F0EB", label: "Warm Ivory", hexColor: "#F5F0EB", stockAvailable: true },
-        { value: "#D4B8C7", label: "Soft Pink", hexColor: "#D4B8C7", stockAvailable: true },
-        { value: "#5D3754", label: "Deep Berry", hexColor: "#5D3754", stockAvailable: true },
-        { value: "#2D4B3F", label: "Forest Green", hexColor: "#2D4B3F", stockAvailable: true },
-        { value: "#1C2A3A", label: "Midnight Navy", hexColor: "#1C2A3A", stockAvailable: true },
-      ],
-      display_order: 2,
+      title: "Signature Scent",
+      description: "Select the fragrance that best captures the mood of your event.",
+      fields: [
+        {
+          field_key: "scent",
+          field_type: "scent_selector",
+          label: "Fragrance",
+          placeholder: "Classic Floral or Warm Amber?",
+          is_required: true,
+          options: [
+            { value: "vanilla", label: "Warm Vanilla", icon: "🍦" },
+            { value: "peony", label: "Fresh Peony", icon: "🌸" },
+            { value: "wood", label: "Cedar Wood", icon: "🌲" },
+            { value: "jasmine", label: "Jasmine Bloom", icon: "🌺" },
+          ],
+          display_order: 1,
+        }
+      ]
     },
     {
-      field_key: "scent",
-      field_type: "scent_selector",
-      label: "Create Your Scent",
-      placeholder: "Fresh Flowers or Warm Woods?",
-      is_required: true,
-      options: [
-        { value: "vanilla", label: "Warm Vanilla", icon: "🍦" },
-        { value: "peony", label: "Fresh Peony", icon: "🌸" },
-        { value: "wood", label: "Cedar Wood", icon: "🌲" },
-        { value: "jasmine", label: "Jasmine Bloom", icon: "🌺" },
-        { value: "citrus", label: "Bright Citrus", icon: "🍋" },
-        { value: "amber", label: "Warm Amber", icon: "🟠" },
-      ],
-      display_order: 3,
-    },
+      title: "Personalised Inscriptions",
+      description: "Add messages for your cards and the bottle itself.",
+      fields: [
+        {
+          field_key: "card_top",
+          field_type: "text",
+          label: "Top of Card",
+          placeholder: "e.g. For our special guest",
+          is_required: true,
+          validation: { max_length: 30 },
+          display_order: 1,
+        },
+        {
+          field_key: "card_bottom",
+          field_type: "text",
+          label: "Bottom of Card",
+          placeholder: "e.g. Love, Sarah & Mark",
+          is_required: true,
+          validation: { max_length: 30 },
+          display_order: 2,
+        },
+        {
+          field_key: "bottle_writing",
+          field_type: "text",
+          label: "Vinyl Writing on Bottle",
+          placeholder: "e.g. S & M",
+          is_required: false,
+          validation: { max_length: 15 },
+          display_order: 3,
+        }
+      ]
+    }
   ],
   pricing_rules: [
     {

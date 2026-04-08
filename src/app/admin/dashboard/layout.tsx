@@ -10,8 +10,10 @@ const NAV = [
   { href: '/admin/dashboard/products', label: 'Products', icon: '⬡' },
   { href: '/admin/dashboard/orders', label: 'Orders', icon: '◎' },
   { href: '/admin/dashboard/portfolio', label: 'Lookbook', icon: '✦' },
+  { href: '/admin/dashboard/blog', label: 'Blog', icon: '✎' },
   { href: '/admin/dashboard/categories', label: 'Categories', icon: '⬢' },
   { href: '/admin/dashboard/analytics', label: 'Analytics', icon: '◉' },
+  { href: '/admin/dashboard/chatbot', label: 'Chat Bot', icon: '◌' },
   { href: '/admin/studio', label: 'Sanity Studio', icon: '⌬', newTab: true },
 ]
 

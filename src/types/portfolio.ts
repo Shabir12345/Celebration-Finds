@@ -1,11 +1,11 @@
-// ─── Portfolio / Lookbook Types ───────────────────────────────────────────────
+// ─── Portfolio / Design Types ───────────────────────────────────────────────
 
-export type EventType = "wedding" | "corporate" | "birthday" | "baby-shower" | "other";
+export type DesignCategory = "sculpted" | "minimalist" | "luxe" | "branded" | "other";
 
-export interface PortfolioEvent {
+export interface PortfolioEntry {
   _id: string;
   title: string;
-  eventType: EventType;
+  category: DesignCategory;
   date: string;            // ISO date string
   coverImage: {
     asset: { _ref: string };
@@ -22,15 +22,15 @@ export interface PortfolioEvent {
   slug?: { current: string };
 }
 
-export const EVENT_TYPE_LABELS: Record<EventType | "all", string> = {
-  all:          "All Events",
-  wedding:      "Weddings",
-  corporate:    "Corporate",
-  birthday:     "Birthdays",
-  "baby-shower": "Baby Showers",
-  other:        "Other",
+export const DESIGN_CATEGORY_LABELS: Record<DesignCategory | "all", string> = {
+  all:          "All Designs",
+  sculpted:     "Sculpted & Organic",
+  minimalist:   "Minimalist & Clean",
+  luxe:         "Luxury & Metallic",
+  branded:      "Corporate & Branded",
+  other:        "Other Styles",
 };
 
-export const EVENT_TYPE_LIST: Array<EventType | "all"> = [
-  "all", "wedding", "corporate", "birthday", "baby-shower",
+export const DESIGN_CATEGORY_LIST: Array<DesignCategory | "all"> = [
+  "all", "sculpted", "minimalist", "luxe", "branded",
 ];

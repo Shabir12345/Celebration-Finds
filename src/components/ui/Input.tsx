@@ -52,10 +52,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               htmlFor={inputId}
               className={cn(
                 "absolute left-0 cursor-text luxury-transition font-sans pointer-events-none",
-                isFocused 
+                isFocused || (props.value && props.value !== "") || props.type === "date"
                   ? "-top-3 text-[12px] font-medium text-[var(--color-accent-gold)]"
-                  : props.value && props.value !== ""
-                  ? "-top-3 text-[12px] text-[var(--color-text-secondary)]" 
                   : "top-3 text-[16px] text-[var(--color-text-tertiary)] peer-placeholder-shown:top-3 peer-placeholder-shown:text-[16px]",
                 error && "text-[var(--color-status-error)]"
               )}

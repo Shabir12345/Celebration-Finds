@@ -44,6 +44,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   }, [isOpen]);
 
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const FREE_SHIPPING_THRESHOLD = 250;
+  const progress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const amountAway = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
 
   return (
     <AnimatePresence>
@@ -67,16 +70,44 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed right-0 top-0 bottom-0 z-[70] w-full max-w-md bg-[var(--color-bg-primary)] shadow-modal flex flex-col"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[var(--color-border-subtle)]">
-              <h2 className="text-h3 font-serif text-[var(--color-text-primary)]">Your Bag</h2>
-              <button
-                onClick={onClose}
-                className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] luxury-transition p-2"
-                aria-label="Close Cart"
-              >
-                <X className="w-5 h-5" />
-              </button>
+            {/* Header & Promos */}
+            <div className="flex flex-col border-b border-[var(--color-border-subtle)]">
+              <div className="flex items-center justify-between p-6 pb-4">
+                <h2 className="text-h3 font-serif text-[var(--color-text-primary)]">Your Bag</h2>
+                <button
+                  onClick={onClose}
+                  className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] luxury-transition p-2"
+                  aria-label="Close Cart"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Free Shipping Bar */}
+              {items.length > 0 && (
+                <div className="px-6 pb-5">
+                  <div className="flex items-center justify-between mb-2 text-xs font-medium tracking-wide">
+                    {amountAway > 0 ? (
+                      <span className="text-[var(--color-text-secondary)]">
+                        You're <span className="font-bold text-[var(--color-accent-emerald)]">{currencySymbol}{amountAway.toFixed(2)}</span> away from complimentary shipping.
+                      </span>
+                    ) : (
+                      <span className="font-bold text-[var(--color-accent-emerald)] flex items-center gap-1.5">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                        Complimentary shipping unlocked!
+                      </span>
+                    )}
+                  </div>
+                  <div className="h-1 w-full bg-[var(--color-bg-tertiary)] rounded-full overflow-hidden">
+                    <motion.div 
+                      className="h-full bg-[var(--color-accent-emerald)] luxury-transition"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Content Body */}
@@ -128,6 +159,27 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   ))}
                 </AnimatePresence>
               )}
+
+              {/* Cart Upsells (Only show if cart has items) */}
+              {items.length > 0 && (
+                <div className="mt-8 pt-8 border-t border-[var(--color-border-subtle)] border-dashed">
+                  <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-text-tertiary)] mb-4">Pairs Perfectly With</h4>
+                  <div className="bg-[var(--color-bg-secondary)] p-4 rounded-sm flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-white rounded-sm border border-[var(--color-border-subtle)] overflow-hidden">
+                        <img src="https://plus.unsplash.com/premium_photo-1673884221507-3cf36d88f92a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMjA3fDB8MXxzZWFyY2h8MXx8YmxhY2slMjBmbGFza3xlbnwwfHx8fDE3NzQ0NTMyNTB8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Satin Ribbon Upgrade" className="w-full h-full object-cover opacity-80 mix-blend-multiply" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-serif font-medium text-[var(--color-text-primary)]">Premium Satin Ribbon</p>
+                        <p className="text-xs text-[var(--color-text-secondary)]">+$15.00</p>
+                      </div>
+                    </div>
+                    <button className="text-xs font-bold uppercase tracking-wider text-[var(--color-accent-navy)] hover:text-[var(--color-accent-emerald)] bg-transparent border-none p-2 luxury-transition outline-none">
+                      Add
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Footer Summary */}
@@ -137,12 +189,22 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span className="text-[16px] text-[var(--color-text-secondary)]">Subtotal</span>
                   <span className="text-h3 font-serif">{currencySymbol}{subtotal.toFixed(2)}</span>
                 </div>
-                <Button variant="primary" size="lg" className="w-full bg-[var(--color-accent-emerald)] text-white hover:brightness-110" onClick={onCheckout}>
+                <Button variant="primary" size="lg" className="w-full bg-[var(--color-accent-emerald)] text-white hover:brightness-110 shadow-lg hover:shadow-xl mb-4" onClick={onCheckout}>
                   Secure Checkout
                 </Button>
-                <p className="text-center text-[12px] text-[var(--color-text-tertiary)] mt-4">
-                  Taxes and complimentary shipping calculated at checkout.
-                </p>
+                
+                {/* Trust Badges */}
+                <div className="flex items-center justify-center gap-6 mt-4 opacity-70">
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-secondary)]">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                    Secure
+                  </div>
+                  <div className="w-1 h-1 rounded-full bg-[var(--color-border-subtle)]" />
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-secondary)]">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Guarantee
+                  </div>
+                </div>
               </div>
             )}
           </motion.div>

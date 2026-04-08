@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
+import ChatWidget from "@/components/ui/ChatWidget";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -53,6 +55,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
+        <ChatWidget />
+        <Analytics />
       </body>
     </html>
   );

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = [
   { name: "Shop", href: "/shop" },
   { name: "Portfolio", href: "/portfolio" },
+  { name: "Blog", href: "/blog" },
   { name: "Partnerships", href: "/wholesale" },
   { name: "About", href: "/about" },
 ];
@@ -19,8 +20,10 @@ export default function SiteHeader() {
   const itemCount = getTotalItems();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -33,11 +36,21 @@ export default function SiteHeader() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled 
-          ? "bg-white/90 backdrop-blur-md border-b border-slate-100 py-4 shadow-sm" 
-          : "bg-transparent py-6"
+          ? "bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm" 
+          : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+      {/* Announcement Bar */}
+      <div className="w-full bg-[var(--color-accent-emerald)] text-white text-[10px] font-bold uppercase tracking-[0.2em] py-2 flex items-center justify-center gap-2">
+        <span className="text-[var(--color-accent-gold)]">✧</span>
+        <span>Complimentary Expedited Shipping on Bespoke Orders Over $250</span>
+        <span className="text-[var(--color-accent-gold)]">✧</span>
+      </div>
+
+      <div className={cn(
+        "container mx-auto px-4 md:px-6 flex items-center justify-between transition-all duration-500",
+        isScrolled ? "py-4" : "py-6"
+      )}>
         {/* Logo */}
         <Link 
           href="/" 
@@ -86,7 +99,7 @@ export default function SiteHeader() {
           >
             <div className="relative p-2 rounded-full hover:bg-slate-50 transition-colors">
               <ShoppingBag className="w-5 h-5 text-accent group-hover:text-primary transition-colors" />
-              {itemCount > 0 && (
+              {mounted && itemCount > 0 && (
                 <motion.span 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}

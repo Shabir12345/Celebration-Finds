@@ -1,7 +1,7 @@
 "use client";
 
 import FeaturedCategories from "@/components/ui/FeaturedCategories";
-import { Sparkles, Heart, Zap } from "lucide-react";
+import { Sparkles, Heart, Zap, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { HeroSection } from "@/components/ui/HeroSection";
 import { LookbookGrid } from "@/components/ui/LookbookGrid";
@@ -10,6 +10,7 @@ import { InquiryForm } from "@/components/ui/InquiryForm";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { FAQSection } from "@/components/ui/FAQSection";
 import { GiftBuilderCarousel } from "@/components/ui/GiftBuilderCarousel";
+import { TrustBanner } from "@/components/ui/TrustBanner";
 
 export default function Home() {
   const lookbookItems = [
@@ -47,89 +48,30 @@ export default function Home() {
     <div className="bg-[var(--color-bg-primary)] min-h-screen">
       <HeroSection
         type="full-bleed"
-        headline="Gifts You Will Never Forget."
-        subheadline="Turn your special moments into magic. We make beautiful, custom party favors that show you care."
-        ctaText="Start Gifting"
+        headline="Unforgettable Impressions, Expertly Crafted."
+        subheadline="Elevate your significant milestones with bespoke, artisanal favors designed to reflect your unique vision and leave a lasting legacy of appreciation."
+        ctaText="Begin Personalizing"
         imageUrl="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=2069"
         onCtaClick={() => window.location.href = '/demo-builder'}
+        secondaryCtaText="Explore Bestsellers"
+        onSecondaryCtaClick={() => window.location.href = '#signature-collection'}
       />
 
-      {/* Value Proposition Section */}
-      <section className="py-24 px-6 max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center space-y-6"
-          >
-            <div className="w-16 h-16 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border-subtle)]">
-              <Heart className="w-6 h-6 text-[var(--color-accent-gold)]" />
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-h3 font-serif text-[var(--color-text-primary)] tracking-tight">Made by Hand to Bring Joy</h3>
-              <p className="text-body-m text-[var(--color-text-secondary)] leading-relaxed max-w-sm font-light">
-                Give favors that feel truly personal. Every gift is made with care and high-quality materials. It creates an unboxing moment your guests will treasure.
-              </p>
-            </div>
-          </motion.div>
+      {/* Trust Banner - Added for immediate authority/social proof */}
+      <TrustBanner />
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex flex-col items-center text-center space-y-6"
-          >
-            <div className="w-16 h-16 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border-subtle)]">
-              <Zap className="w-6 h-6 text-[var(--color-accent-gold)]" />
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-h3 font-serif text-[var(--color-text-primary)] tracking-tight">Simple and Fun Customization</h3>
-              <p className="text-body-m text-[var(--color-text-secondary)] leading-relaxed max-w-sm font-light">
-                Designing custom gifts should be as fun as the party itself. Our easy GiftBuilder lets you choose your colors, scents, and sweet messages in seconds.
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col items-center text-center space-y-6"
-          >
-            <div className="w-16 h-16 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border-subtle)]">
-              <Sparkles className="w-6 h-6 text-[var(--color-accent-gold)]" />
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-h3 font-serif text-[var(--color-text-primary)] tracking-tight">Beautiful Gifts for Every Event</h3>
-              <p className="text-body-m text-[var(--color-text-secondary)] leading-relaxed max-w-sm font-light">
-                Are you planning a dream wedding or a sweet baby shower? Our collections blend elegant style with warm touches to leave a lasting impression.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* GiftBuilder Carousel Preview */}
-      <GiftBuilderCarousel />
-
-      {/* Featured Categories */}
-      <FeaturedCategories />
-
-      <section className="py-32 px-6 max-w-[1440px] mx-auto border-t border-[var(--color-border-subtle)]/50">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-20 px-4">
+      {/* Featured Curations - Moved UP for immediate conversion focus */}
+      <section id="signature-collection" className="py-24 px-6 max-w-[1440px] mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 px-4">
            <div>
              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--color-accent-gold)] mb-3 block">
-               Season&apos;s Favorites
+               Signature Collection
              </span>
-             <h2 className="text-h2 font-serif text-[var(--color-text-primary)] mb-2">Featured Curations</h2>
-             <p className="text-body-m text-[var(--color-text-secondary)] font-light italic">Hand-selected pieces for your upcoming celebrations.</p>
+             <h2 className="text-h2 font-serif text-[var(--color-text-primary)] mb-2">Renowned Favorites</h2>
+             <p className="text-body-m text-[var(--color-text-secondary)] font-light italic">Meticulously curated pieces preferred by our most distinguished clients.</p>
            </div>
            <a href="/demo-builder" className="group flex items-center gap-3 text-ui font-medium uppercase tracking-widest text-sm luxury-transition hover:text-[var(--color-accent-gold)] mt-6 md:mt-0">
-             <span>View All</span>
+             <span>Explore Collection</span>
              <div className="w-10 h-px bg-[var(--color-text-tertiary)] group-hover:bg-[var(--color-accent-gold)] group-hover:w-16 luxury-transition" />
            </a>
         </div>
@@ -154,7 +96,7 @@ export default function Home() {
             id="p3"
             title="Velvet Vow Box"
             price={85.00}
-            badge="New"
+            badge="New Request"
             primaryImage="/images/velvet_vow_box_1774453073891.png"
             hoverImage="https://plus.unsplash.com/premium_photo-1739841781605-2f16957513b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMjA3fDB8MXxzZWFyY2h8MXx8dmVsdmV0JTIwcmluZyUyMGJveHxlbnwwfHx8fDE3NzQ0NTMzNDh8MA&ixlib=rb-4.1.0&q=80&w=1080"
           />
@@ -167,51 +109,124 @@ export default function Home() {
         </div>
       </section>
 
+      {/* GiftBuilder Carousel Preview - Moved UP for interactive engagement */}
+      <div className="border-t border-[var(--color-border-subtle)]/50 pt-16">
+        <GiftBuilderCarousel />
+      </div>
+
+      {/* Featured Categories */}
+      <div className="border-t border-[var(--color-border-subtle)]/50 pt-16">
+        <FeaturedCategories />
+      </div>
+
+      {/* Value Proposition Section - Revised for Trust and Professionalism */}
+      <section className="py-24 px-6 max-w-[1440px] mx-auto border-t border-[var(--color-border-subtle)]/50 mt-16">
+        <div className="text-center mb-16">
+           <span className="text-xs font-semibold tracking-[0.3em] uppercase text-[var(--color-text-tertiary)] mb-4 block">The Celebration Finds Standard</span>
+           <h2 className="text-h2 font-serif text-[var(--color-text-primary)] mb-4">Uncompromising Quality & Service</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-center text-center space-y-6"
+          >
+            <div className="w-16 h-16 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border-subtle)]">
+              <ShieldCheck className="w-6 h-6 text-[var(--color-accent-gold)]" />
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-h3 font-serif text-[var(--color-text-primary)] tracking-tight">Artisanal Craftsmanship</h3>
+              <p className="text-body-m text-[var(--color-text-secondary)] leading-relaxed max-w-sm font-light">
+                We believe excellence lies in the details. Each piece is meticulously assembled by hand using sustainably sourced, premium materials to ensure an unboxing experience that commands attention.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="flex flex-col items-center text-center space-y-6"
+          >
+            <div className="w-16 h-16 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border-subtle)]">
+              <Zap className="w-6 h-6 text-[var(--color-accent-gold)]" />
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-h3 font-serif text-[var(--color-text-primary)] tracking-tight">Seamless Personalization</h3>
+              <p className="text-body-m text-[var(--color-text-secondary)] leading-relaxed max-w-sm font-light">
+                Our intuitive design studio bridges your vision with our execution. Specify hues, select premium fragrances, and engrave bespoke messages with absolute confidence and ease.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-col items-center text-center space-y-6"
+          >
+            <div className="w-16 h-16 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center border border-[var(--color-border-subtle)]">
+              <Sparkles className="w-6 h-6 text-[var(--color-accent-gold)]" />
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-h3 font-serif text-[var(--color-text-primary)] tracking-tight">Curated for Milestones</h3>
+              <p className="text-body-m text-[var(--color-text-secondary)] leading-relaxed max-w-sm font-light">
+                From executive corporate galas to exclusive private ceremonies, our collections are sophisticated accompaniments designed to elevate the ambiance of your most significant events.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Parallax Testimonial - Moved UP for Social Proof */}
+      <TestimonialBlock
+        quote="The precision and elegance of these favors exceeded our expectations entirely. Our guests were genuinely captivated by the presentation. Absolute perfection."
+        author="Eleanor V."
+        role="Event Director"
+      />
+
       {/* Lookbook Grid Showcase */}
       <section className="py-24 bg-[var(--color-bg-secondary)]/30">
         <div className="text-center mb-16">
-           <span className="text-xs font-semibold tracking-[0.3em] uppercase text-[var(--color-text-tertiary)] mb-4 block">Visual Stories</span>
+           <span className="text-xs font-semibold tracking-[0.3em] uppercase text-[var(--color-text-tertiary)] mb-4 block">Event Portfolio</span>
            <h2 className="text-h2 font-serif text-[var(--color-text-primary)] mb-4">The Lookbook</h2>
-           <p className="text-body-m text-[var(--color-text-secondary)] font-light max-w-xl mx-auto italic">Real celebrations, real magic. See how our gifts transform moments into memories.</p>
+           <p className="text-body-m text-[var(--color-text-secondary)] font-light max-w-xl mx-auto italic">Visual chronicles of distinguished events, enhanced by our custom creations.</p>
         </div>
         <LookbookGrid items={lookbookItems} />
       </section>
 
-      {/* Parallax Testimonial */}
-      <TestimonialBlock
-        quote="Our wedding guests loved these beautiful gifts. They felt so special and personal. Pure magic!"
-        author="Sophia L."
-        role="Bride"
-      />
-
       {/* FAQ Section */}
       <section className="py-24 px-6 max-w-[1440px] mx-auto bg-white rounded-3xl my-24 border border-[var(--color-border-subtle)] shadow-sm">
         <FAQSection 
-          title="Common Gifting Questions"
+          title="Client Inquiries & Protocol"
           items={[
             {
-              question: "How early should I place my order?",
-              answer: "To make sure every detail is perfect, we suggest ordering your gifts 4 to 6 weeks before your big event."
+              question: "What is the recommended lead time for bespoke orders?",
+              answer: "To ensure uncompromising attention to detail, we request that bespoke commissions be finalized 4 to 6 weeks prior to your event date."
             },
             {
-              question: "Can I see what my custom gifts will look like?",
-              answer: "Yes! Our easy GiftBuilder shows you a real-time preview of your colors, scents, and foil text."
+              question: "Can I preview my customized selections before production?",
+              answer: "Certainly. Our digital GiftBuilder provides a high-fidelity rendering of your chosen specifications, allowing you to review foil stamping, palette alignments, and component selections instantly."
             },
             {
-              question: "Do you give discounts for very large orders?",
-              answer: "Yes! We love big celebrations. We offer special bulk pricing for grand weddings and large corporate events."
+              question: "Do you accommodate high-volume corporate or grand-scale events?",
+              answer: "Yes. We maintain a dedicated fulfillment protocol for grand-scale galas and corporate gifting, complete with tiered pricing structures for extensive commissions."
             },
             {
-              question: "Why do your gifts feel so premium?",
-              answer: "We care about the little things. We use thick ivory paper, shiny gold foil, and high-quality natural wax to make everything feel luxurious."
+              question: "What defines the premium nature of your products?",
+              answer: "Our commitment to excellence dictates our sourcing: we utilize heavy-stock textured vellum, authentic metallic foil stamping, and sustainably harvested natural soy waxes, ensuring every touchpoint exudes refinement."
             },
             {
-              question: "Can I match my order to my exact wedding colors?",
-              answer: "Of course. We have colors that match modern event themes beautifully, from soft pinks to deep greens and warm neutrals."
+              question: "Are you able to precisely match my event's unique color palette?",
+              answer: "We offer a meticulously curated spectrum of contemporary hues designed to harmonize flawlessly with modern aesthetics, from subtle, sophisticated blushes to deep, dramatic emeralds."
             },
             {
-              question: "Will my custom gifts arrive fully put together?",
-              answer: "Yes. Every beautiful piece arrives perfectly put together and ready to place on your event tables."
+              question: "Will the favors require assembly upon delivery?",
+              answer: "No. Your order will arrive flawlessly assembled, elegantly packaged, and immediately ready for placement at your venue."
             }
           ]}
         />

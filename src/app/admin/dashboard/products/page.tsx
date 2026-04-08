@@ -5,6 +5,9 @@ import { client } from '@/lib/sanity'
 import { groq } from 'next-sanity'
 import { urlFor } from '@/lib/sanity'
 import Image from 'next/image'
+import Link from 'next/link'
+import CustomizationBuilder from '@/components/admin/CustomizationBuilder'
+import { CustomizationStep } from '@/types/customization'
 
 interface Product {
   _id: string
@@ -16,11 +19,19 @@ interface Product {
   isFeatured: boolean
   isActive: boolean
   images: Array<{ asset: { _ref: string } }>
+  customizationSchema?: { _ref: string }
+  // We'll fetch the actual steps for editing
+  customizationSteps?: CustomizationStep[]
 }
 
 interface Category {
   _id: string
   name: string
+}
+
+interface CustomizationSchema {
+  _id: string
+  title: string
 }
 
 const STATUS_BADGE: Record<string, string> = {
@@ -31,12 +42,16 @@ const STATUS_BADGE: Record<string, string> = {
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [schemas, setSchemas] = useState<CustomizationSchema[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editProduct, setEditProduct] = useState<Product | null>(null)
   const [search, setSearch] = useState('')
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null)
   const [saving, setSaving] = useState(false)
+  const [selectedImages, setSelectedImages] = useState<File[]>([])
+  const [existingImages, setExistingImages] = useState<Array<{ asset: { _ref: string } }>>([])
+  const [builderSteps, setBuilderSteps] = useState<CustomizationStep[]>([])
   const formRef = useRef<HTMLFormElement>(null)
 
   async function fetchAll() {
@@ -46,11 +61,14 @@ export default function ProductsPage() {
         _id, name, "slug": slug.current,
         "category": category->name,
         priceBase, minQuantity, isFeatured, isActive,
-        images
+        images,
+        "customizationSchema": customizationSchema._ref,
+        "customizationSteps": customizationSchema->steps
       } | order(_createdAt desc)`;
       const qCategory = groq`*[_type == "category"] { _id, name } | order(name asc)`;
+      const qSchema = groq`*[_type == "customizationSchema"] { _id, title } | order(title asc)`;
 
-      const [resProd, resCat] = await Promise.all([
+      const [resProd, resCat, resSchema] = await Promise.all([
         fetch('/api/sanity-proxy', { 
            method: 'POST', 
            headers: { 'Content-Type': 'application/json' },
@@ -60,13 +78,19 @@ export default function ProductsPage() {
           method: 'POST', 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query: qCategory }) 
-       })
+       }),
+       fetch('/api/sanity-proxy', { 
+         method: 'POST', 
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ query: qSchema }) 
+      })
       ]);
 
-      const [prods, cats] = await Promise.all([resProd.json(), resCat.json()]);
+      const [prods, cats, schms] = await Promise.all([resProd.json(), resCat.json(), resSchema.json()]);
       
       setProducts(prods ?? [])
       setCategories(cats ?? [])
+      setSchemas(schms ?? [])
     } catch (err) {
       console.error('Failed to fetch:', err);
       showToast('Could not load data. Check console.', 'error');
@@ -82,9 +106,25 @@ export default function ProductsPage() {
     setTimeout(() => setToast(null), 3500)
   }
 
-  function openAdd() { setEditProduct(null); setShowForm(true) }
-  function openEdit(p: Product) { setEditProduct(p); setShowForm(true) }
-  function closeForm() { setShowForm(false); setEditProduct(null) }
+  function openAdd() { 
+    setEditProduct(null); 
+    setSelectedImages([]);
+    setExistingImages([]);
+    setShowForm(true); 
+  }
+  function openEdit(p: Product) { 
+    setEditProduct(p); 
+    setSelectedImages([]);
+    setExistingImages(p.images || []);
+    setBuilderSteps(p.customizationSteps || []);
+    setShowForm(true); 
+  }
+  function closeForm() { 
+    setShowForm(false); 
+    setEditProduct(null); 
+    setSelectedImages([]);
+    setExistingImages([]);
+  }
 
   async function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -92,6 +132,28 @@ export default function ProductsPage() {
     const fd = new FormData(e.currentTarget)
 
     try {
+      // 1. Upload new images
+      const newImageRefs: Array<{ asset: { _ref: string } }> = []
+      for (const file of selectedImages) {
+        const uploadFd = new FormData()
+        uploadFd.append('file', file)
+        
+        const uploadRes = await fetch('/api/admin/upload', {
+          method: 'POST',
+          body: uploadFd
+        })
+        
+        if (!uploadRes.ok) throw new Error('Image upload failed')
+        const { asset } = await uploadRes.json()
+        newImageRefs.push({
+          asset: { _ref: asset._id }
+        })
+      }
+
+      // Combine existing and new images
+      const finalImages = [...existingImages, ...newImageRefs]
+
+      // 2. Save product
       const res = await fetch('/api/admin/products', {
         method: editProduct ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -100,10 +162,13 @@ export default function ProductsPage() {
           name: fd.get('name'),
           description: fd.get('description'),
           categoryId: fd.get('categoryId'),
+          customizationSchemaId: fd.get('customizationSchemaId'),
           priceBase: parseFloat(fd.get('priceBase') as string),
           minQuantity: parseInt(fd.get('minQuantity') as string),
           isFeatured: fd.get('isFeatured') === 'on',
           isActive: fd.get('isActive') !== 'off',
+          images: finalImages,
+          customizationBuilder: builderSteps.length > 0 ? builderSteps : null
         }),
       })
 
@@ -143,7 +208,7 @@ export default function ProductsPage() {
     }
   }
 
-  const filtered = products.filter(p =>
+  const filtered = products.filter((p: Product) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -263,91 +328,177 @@ export default function ProductsPage() {
             </div>
 
             <form ref={formRef} onSubmit={handleSave} className="product-form">
-              <div className="form-group">
-                <label className="form-label">Product Name *</label>
-                <input
-                  name="name"
-                  required
-                  defaultValue={editProduct?.name}
-                  placeholder="e.g. Custom Candle Set"
-                  className="form-input"
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Description</label>
-                <textarea
-                  name="description"
-                  rows={3}
-                  placeholder="Describe this product…"
-                  className="form-input form-textarea"
-                />
-              </div>
-
-              <div className="form-row">
+              
+              {/* Basic Details Section */}
+              <div className="form-section">
+                <h4 className="section-title">Basic Details</h4>
+                <div className="form-group">
+                  <label className="form-label">Product Name *</label>
+                  <input
+                    name="name"
+                    required
+                    defaultValue={editProduct?.name}
+                    placeholder="e.g. Custom Candle Set"
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Description</label>
+                  <textarea
+                    name="description"
+                    rows={3}
+                    placeholder="Describe this product…"
+                    className="form-input form-textarea"
+                  />
+                </div>
                 <div className="form-group">
                   <label className="form-label">Category *</label>
-                  <select name="categoryId" required className="form-input form-select">
+                  <select name="categoryId" required defaultValue={editProduct?.category} className="form-input form-select">
                     <option value="">Select category…</option>
                     {categories.map(c => (
                       <option key={c._id} value={c._id}>{c.name}</option>
                     ))}
                   </select>
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Base Price ($) *</label>
-                  <input
-                    name="priceBase"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    required
-                    defaultValue={editProduct?.priceBase}
-                    placeholder="0.00"
-                    className="form-input"
-                  />
+                  {categories.length === 0 && (
+                    <p className="form-helper color-warning">
+                      No categories found. <Link href="/admin/dashboard/categories" className="link-inline">Add categories first</Link>
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Min Order Quantity</label>
-                  <input
-                    name="minQuantity"
-                    type="number"
-                    min="1"
-                    defaultValue={editProduct?.minQuantity ?? 25}
-                    className="form-input"
-                  />
+              {/* Pricing & Stock */}
+              <div className="form-section">
+                <h4 className="section-title">Pricing & Inventory</h4>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Base Price ($) *</label>
+                    <input
+                      name="priceBase"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      required
+                      defaultValue={editProduct?.priceBase}
+                      placeholder="0.00"
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Min Order Quantity</label>
+                    <input
+                      name="minQuantity"
+                      type="number"
+                      min="1"
+                      defaultValue={editProduct?.minQuantity ?? 25}
+                      className="form-input"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="form-toggles">
-                <label className="toggle-label">
-                  <input
-                    type="checkbox"
-                    name="isFeatured"
-                    defaultChecked={editProduct?.isFeatured}
-                    className="toggle-cb"
-                  />
-                  <span className="toggle-text">⭐ Featured Product</span>
-                </label>
-                <label className="toggle-label">
-                  <input
-                    type="checkbox"
-                    name="isActive"
-                    defaultChecked={editProduct?.isActive ?? true}
-                    className="toggle-cb"
-                  />
-                  <span className="toggle-text">✓ Active (visible on store)</span>
-                </label>
+              {/* Media Section */}
+              <div className="form-section">
+                 <h4 className="section-title">Media</h4>
+                 <div className="form-group">
+                   <label className="form-label">Upload Images</label>
+                   <div className="media-uploader">
+                     <input 
+                       type="file" 
+                       multiple 
+                       accept="image/*"
+                       onChange={e => {
+                         if (e.target.files) {
+                           setSelectedImages(Array.from(e.target.files))
+                         }
+                       }}
+                       className="file-input"
+                     />
+                     <div className="media-preview-grid">
+                        {existingImages.map((img, idx) => (
+                           <div key={`exist-${idx}`} className="preview-item existing">
+                             <Image 
+                               src={urlFor(img).width(120).height(120).url()} 
+                               alt="existing" 
+                               width={60} 
+                               height={60} 
+                               style={{ objectFit: 'cover' }} 
+                             />
+                             <button type="button" className="remove-img-btn" onClick={() => {
+                               setExistingImages(prev => prev.filter((_, i) => i !== idx))
+                             }}>✕</button>
+                           </div>
+                        ))}
+                        {selectedImages.map((file: File, idx: number) => (
+                           <div key={`new-${idx}`} className="preview-item new-file">
+                             <img src={URL.createObjectURL(file)} alt="preview" style={{ width: '60px', height: '60px', objectFit: 'cover' }} />
+                             <button type="button" className="remove-img-btn" onClick={() => {
+                               setSelectedImages((prev: File[]) => prev.filter((_: File, i: number) => i !== idx))
+                             }}>✕</button>
+                           </div>
+                        ))}
+                     </div>
+                   </div>
+                 </div>
               </div>
 
-              <p className="form-note">
-                💡 To upload images, use{' '}
-                <a href="/admin/studio" target="_blank" className="form-link">Sanity Studio</a>{' '}
-                after saving this product.
-              </p>
+              {/* Customization & Personalization */}
+              <div className="form-section">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="section-title border-none pb-0">Customization & Personalization</h4>
+                  {builderSteps.length > 0 && (
+                    <button 
+                      type="button" 
+                      onClick={() => setBuilderSteps([])} 
+                      className="text-[10px] font-bold text-red-400/60 hover:text-red-400 uppercase tracking-widest transition-colors"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+                
+                <p className="text-xs text-white/30 mb-4">
+                  Define the steps and options for personalizing this product. For writing/inscriptions, add a stage and then add as many text fields as needed.
+                </p>
+
+                <div className="bg-black/20 rounded-xl p-4 border border-white/5">
+                   <CustomizationBuilder 
+                     steps={builderSteps} 
+                     onChange={setBuilderSteps} 
+                   />
+                </div>
+
+                <div className="form-group mt-4 pt-4 border-t border-white/5">
+                  <label className="form-label">Or use an existing schema</label>
+                  <select name="customizationSchemaId" defaultValue={editProduct?.customizationSchema?._ref} className="form-input form-select">
+                    <option value="">No existing schema selected</option>
+                    {schemas.map(s => (
+                      <option key={s._id} value={s._id}>{s.title}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-toggles mt-4 pt-4 border-t border-white/5">
+                  <label className="toggle-label">
+                    <input
+                      type="checkbox"
+                      name="isFeatured"
+                      defaultChecked={editProduct?.isFeatured}
+                      className="toggle-cb"
+                    />
+                    <span className="toggle-text">⭐ Featured Product</span>
+                  </label>
+                  <label className="toggle-label">
+                    <input
+                      type="checkbox"
+                      name="isActive"
+                      defaultChecked={editProduct?.isActive ?? true}
+                      className="toggle-cb"
+                    />
+                    <span className="toggle-text">✓ Active (visible on store)</span>
+                  </label>
+                </div>
+              </div>
 
               <div className="form-footer">
                 <button type="button" onClick={closeForm} className="btn-ghost">Cancel</button>
@@ -515,7 +666,7 @@ export default function ProductsPage() {
           display: flex; justify-content: flex-end;
         }
         .slideover {
-          width: 100%; max-width: 500px;
+          width: 100%; max-width: 800px; /* Increased from 500px */
           background: #12121e;
           border-left: 1px solid rgba(255,255,255,0.08);
           height: 100%;
@@ -527,13 +678,13 @@ export default function ProductsPage() {
 
         .slideover-header {
           display: flex; align-items: center; justify-content: space-between;
-          padding: 1.5rem;
+          padding: 1.5rem 2rem;
           border-bottom: 1px solid rgba(255,255,255,0.07);
           position: sticky; top: 0;
           background: #12121e;
-          z-index: 1;
+          z-index: 10;
         }
-        .slideover-title { font-size: 1.125rem; font-weight: 700; color: white; margin: 0; }
+        .slideover-title { font-size: 1.25rem; font-weight: 700; color: white; margin: 0; }
         .close-btn {
           background: rgba(255,255,255,0.06); border: none;
           border-radius: 7px; width: 32px; height: 32px;
@@ -544,52 +695,95 @@ export default function ProductsPage() {
         .close-btn:hover { background: rgba(255,255,255,0.1); color: white; }
 
         .product-form {
-          display: flex; flex-direction: column; gap: 1.25rem;
-          padding: 1.5rem;
+          display: flex; flex-direction: column; gap: 2rem;
+          padding: 2rem;
           flex: 1;
         }
+        
+        .form-section {
+          display: flex; flex-direction: column; gap: 1.25rem;
+          padding: 1.5rem;
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(255,255,255,0.05);
+          border-radius: 12px;
+        }
+        
+        .section-title {
+          font-size: 1rem; font-weight: 600; color: white; margin: 0;
+          padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
 
-        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .form-label { font-size: 0.8125rem; font-weight: 500; color: rgba(255,255,255,0.55); }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .form-label { font-size: 0.8125rem; font-weight: 500; color: rgba(255,255,255,0.6); }
+        .form-helper { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin: 0; padding-top: 0.25rem; }
+        .color-warning { color: #facc15 !important; font-weight: 500; }
+        .link-inline { color: #a855f7; text-decoration: underline; cursor: pointer; }
+        .link-inline:hover { color: #c084fc; }
 
         .form-input {
-          padding: 0.625rem 0.875rem;
-          background: rgba(255,255,255,0.06);
+          padding: 0.75rem 1rem;
+          background: rgba(255,255,255,0.05);
           border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 9px;
+          border-radius: 8px;
           color: white;
-          font-size: 0.9rem;
+          font-size: 0.95rem;
           outline: none;
-          transition: border-color 0.2s;
+          transition: border-color 0.2s, background 0.2s;
           font-family: inherit;
         }
         .form-input:focus { border-color: rgba(168,85,247,0.5); background: rgba(168,85,247,0.05); }
-        .form-textarea { resize: vertical; }
+        .form-textarea { resize: vertical; min-height: 80px; }
         .form-select { appearance: none; cursor: pointer; }
         .form-select option { background: #12121e; }
 
-        .form-toggles { display: flex; flex-direction: column; gap: 0.625rem; }
-        .toggle-label { display: flex; align-items: center; gap: 0.625rem; cursor: pointer; }
-        .toggle-cb { accent-color: #a855f7; width: 16px; height: 16px; }
-        .toggle-text { font-size: 0.875rem; color: rgba(255,255,255,0.65); }
+        .form-toggles { display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem; }
+        .toggle-label { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
+        .toggle-cb { accent-color: #a855f7; width: 18px; height: 18px; cursor: pointer; }
+        .toggle-text { font-size: 0.9rem; color: rgba(255,255,255,0.7); }
 
-        .form-note {
-          font-size: 0.8125rem;
-          color: rgba(255,255,255,0.3);
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 8px;
-          padding: 0.75rem;
-          margin: 0;
+        /* Media Uploader */
+        .media-uploader {
+           display: flex; flex-direction: column; gap: 1rem;
         }
-        .form-link { color: #a78bfa; }
+        .file-input {
+           font-size: 0.875rem; color: rgba(255,255,255,0.6);
+        }
+        .file-input::file-selector-button {
+           padding: 0.5rem 1rem; margin-right: 1rem;
+           background: rgba(255,255,255,0.1);
+           border: 1px solid rgba(255,255,255,0.1);
+           border-radius: 6px; color: white; cursor: pointer;
+           transition: background 0.2s;
+        }
+        .file-input::file-selector-button:hover { background: rgba(255,255,255,0.15); }
+        
+        .media-preview-grid {
+           display: flex; flex-wrap: wrap; gap: 1rem;
+        }
+        .preview-item {
+           position: relative;
+           width: 60px; height: 60px;
+           border-radius: 8px; overflow: hidden;
+           border: 1px solid rgba(255,255,255,0.1);
+        }
+        .remove-img-btn {
+           position: absolute; top: 2px; right: 2px;
+           width: 18px; height: 18px;
+           background: rgba(0,0,0,0.6); color: white;
+           border: none; border-radius: 50%;
+           font-size: 10px; cursor: pointer;
+           display: flex; align-items: center; justify-content: center;
+        }
+        .remove-img-btn:hover { background: rgba(239,68,68,0.8); }
 
         .form-footer {
-          display: flex; gap: 0.75rem;
-          padding-top: 0.5rem;
-          border-top: 1px solid rgba(255,255,255,0.06);
+          display: flex; gap: 1rem; justify-content: flex-end;
+          padding: 1.5rem 2rem;
+          border-top: 1px solid rgba(255,255,255,0.07);
           margin-top: auto;
+          background: rgba(18,18,30,0.95);
+          position: sticky; bottom: 0; z-index: 10;
         }
 
         /* Toast */

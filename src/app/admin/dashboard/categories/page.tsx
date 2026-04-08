@@ -101,6 +101,44 @@ export default function CategoriesPage() {
         </button>
       </div>
 
+      {/* Quick Start Suggestions (Only show if empty) */}
+      {categories.length === 0 && !loading && (
+        <div className="quick-start-box">
+          <div className="quick-start-header">
+            <h3 className="quick-h3">Quick Start</h3>
+            <p className="quick-p">Seed your database with common event categories.</p>
+          </div>
+          <div className="quick-tags">
+            {['Wedding', 'Baby Shower', 'Bridal Shower', 'Birthdays', 'Corporate', 'Custom Gifts'].map(name => (
+              <span key={name} className="quick-tag">{name}</span>
+            ))}
+          </div>
+          <button 
+            onClick={async () => {
+              setSaving(true);
+              try {
+                const res = await fetch('/api/admin/seed-categories', { method: 'POST' });
+                const result = await res.json();
+                if (res.ok) {
+                  showToast('Initial categories seeded!');
+                  fetchCategories();
+                } else {
+                  showToast(`Seeding failed: ${result.details || 'Check Sanity token'}`, 'error');
+                }
+              } catch {
+                showToast('API Error', 'error');
+              } finally {
+                setSaving(false);
+              }
+            }} 
+            disabled={saving}
+            className="btn-seed"
+          >
+            {saving ? 'Seeding…' : 'Seed Default Categories'}
+          </button>
+        </div>
+      )}
+
       {loading ? (
         <div className="cat-grid-loading">
           {[...Array(4)].map((_, i) => <div key={i} className="skeleton-card" />)}
@@ -108,8 +146,8 @@ export default function CategoriesPage() {
       ) : categories.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">⬢</div>
-          <p className="empty-text">No categories yet.</p>
-          <button onClick={() => setShowForm(true)} className="btn-primary">Add Category</button>
+          <p className="empty-text">No categories yet. Use the Quick Start or add manually.</p>
+          <button onClick={() => setShowForm(true)} className="btn-primary">Add Category Manually</button>
         </div>
       ) : (
         <div className="cat-grid">
@@ -235,6 +273,44 @@ export default function CategoriesPage() {
         }
         .empty-icon { font-size: 2rem; color: rgba(255,255,255,0.12); }
         .empty-text { font-size: 0.875rem; color: rgba(255,255,255,0.35); margin: 0; }
+
+        /* Quick Start */
+        .quick-start-box {
+          background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(99,102,241,0.1));
+          border: 1px solid rgba(168,85,247,0.2);
+          border-radius: 16px;
+          padding: 1.5rem 2rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+          margin-bottom: 0.5rem;
+        }
+        .quick-h3 { font-size: 1.125rem; font-weight: 700; color: white; margin: 0 0 0.25rem; }
+        .quick-p { font-size: 0.8125rem; color: rgba(255,255,255,0.5); margin: 0; }
+        .quick-tags { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .quick-tag {
+          padding: 0.4rem 0.875rem;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 100px;
+          font-size: 0.75rem;
+          color: rgba(255,255,255,0.7);
+          font-weight: 500;
+        }
+        .btn-seed {
+          align-self: flex-start;
+          padding: 0.75rem 1.5rem;
+          background: white;
+          color: #12121e;
+          border: none;
+          border-radius: 10px;
+          font-size: 0.875rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .btn-seed:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,255,255,0.2); }
+        .btn-seed:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Modal */
         .overlay {

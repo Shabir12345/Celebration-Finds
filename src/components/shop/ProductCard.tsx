@@ -71,7 +71,7 @@ export default function ProductCard({
             {category}
           </p>
           <p className="font-serif text-lg font-bold text-[var(--color-text-primary)]">
-            From ${price.toFixed(2)}
+            From ${(price || 0).toFixed(2)}
           </p>
         </div>
         <Link href={`/shop/${slug}`} className="block">

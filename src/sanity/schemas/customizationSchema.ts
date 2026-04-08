@@ -71,6 +71,34 @@ export const customizationField = defineType({
   ],
 });
 
+export const customizationStep = defineType({
+  name: "customizationStep",
+  title: "Customization Step",
+  type: "object",
+  fields: [
+    defineField({
+      name: "title",
+      title: "Step Title",
+      type: "string",
+      description: "e.g., 'Choose Your Scent' or 'Personalize Your Label'",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "description",
+      title: "Step Description",
+      type: "text",
+      description: "Brief instructions for this step",
+    }),
+    defineField({
+      name: "fields",
+      title: "Fields in this Step",
+      type: "array",
+      of: [{ type: "customizationField" }],
+      validation: (Rule) => Rule.required().min(1),
+    }),
+  ],
+});
+
 export const customizationSchema = defineType({
   name: "customizationSchema",
   title: "Customization Schema",
@@ -80,15 +108,16 @@ export const customizationSchema = defineType({
       name: "title",
       title: "Schema Title",
       type: "string",
-      description: "e.g., 'Standard Candle Form'",
+      description: "e.g., 'Premium Perfume Customizer'",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "fields",
-      title: "Fields",
+      name: "steps",
+      title: "Steps",
       type: "array",
-      of: [{ type: "customizationField" }],
+      of: [{ type: "customizationStep" }],
       validation: (Rule) => Rule.required().min(1),
     }),
   ],
 });
+

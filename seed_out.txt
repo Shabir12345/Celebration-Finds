@@ -1,0 +1,8 @@
+≡ƒî▒ Seeding categories...
+Γ¥î Failed to create Wedding: Unauthorized - Session not found
+Γ¥î Failed to create Baby Shower: Unauthorized - Session not found
+Γ¥î Failed to create Bridal Shower: Unauthorized - Session not found
+Γ¥î Failed to create Birthdays: Unauthorized - Session not found
+Γ¥î Failed to create Corporate Events: Unauthorized - Session not found
+Γ¥î Failed to create Anniversaries: Unauthorized - Session not found
+Γ£¿ Seeding complete!

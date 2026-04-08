@@ -76,7 +76,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             />
           )}
           {badge && (
-            <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] uppercase tracking-widest font-medium text-[var(--color-text-primary)]">
+            <span className={cn(
+              "absolute top-3 left-3 backdrop-blur-sm px-3 py-1 text-[10px] uppercase tracking-widest font-bold shadow-sm",
+              badge === "Best Seller" ? "bg-[var(--color-accent-gold)] text-white" :
+              badge === "Low Stock" ? "bg-[var(--color-status-error)] text-white animate-pulse" :
+              badge === "Limited Edition" ? "bg-[var(--color-accent-navy)] text-white" :
+              "bg-white/90 text-[var(--color-text-primary)]"
+            )}>
+              {badge === "Best Seller" && <span className="mr-1">✧</span>}
+              {badge === "Low Stock" && <span className="mr-1 shadow-pulse">⚠️</span>}
               {badge}
             </span>
           )}
@@ -86,7 +94,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div>
             <h3 className="text-h3 font-serif text-[var(--color-text-primary)] mb-2">{title}</h3>
             <p className="text-body-m font-medium text-[var(--color-text-secondary)]">
-              {currencySymbol}{price.toFixed(2)}
+              {currencySymbol}{(price || 0).toFixed(2)}
             </p>
           </div>
           
@@ -136,20 +144,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Badge */}
         {badge && (
           <span className={cn(
-            "absolute top-4 left-4 backdrop-blur-md px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg",
-            badge === "Best Seller" 
-              ? "bg-[var(--color-accent-gold)] text-white" 
-              : "bg-white/90 text-[var(--color-text-primary)]"
+            "absolute top-4 left-4 backdrop-blur-md px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg luxury-transition",
+            badge === "Best Seller" ? "bg-[var(--color-accent-gold)] text-white" :
+            badge === "Low Stock" ? "bg-[var(--color-status-error)] text-white animate-pulse" :
+            badge === "Limited Edition" ? "bg-[var(--color-accent-navy)] text-white" :
+            "bg-white/90 text-[var(--color-text-primary)]"
           )}>
             {badge === "Best Seller" && <span className="mr-1">✧</span>}
+            {badge === "Low Stock" && <span className="mr-1">⏳</span>}
             {badge}
           </span>
         )}
 
         {/* Hover ATC overlay */}
         <div className={cn(
-          "absolute bottom-0 left-0 right-0 p-4 pt-12 bg-gradient-to-t from-black/20 to-transparent luxury-transition transform",
-          isHovered || isAdding ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+          "absolute bottom-0 left-0 right-0 p-4 pt-16 bg-gradient-to-t from-black/50 via-black/20 to-transparent luxury-transition transform",
+          isHovered || isAdding ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
         )}>
           <Button
             variant="primary"
@@ -191,7 +201,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="flex flex-col space-y-1">
         <h3 className="text-h4 font-serif text-[var(--color-text-primary)]">{title}</h3>
         <p className="text-body-m font-medium text-[var(--color-text-secondary)]">
-          {currencySymbol}{price.toFixed(2)}
+          {currencySymbol}{(price || 0).toFixed(2)}
         </p>
       </div>
     </div>

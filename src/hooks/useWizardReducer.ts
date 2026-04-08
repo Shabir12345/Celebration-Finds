@@ -126,16 +126,26 @@ function validateField(
 export function useWizardReducer(schema: CustomizationSchema) {
   const [state, dispatch] = useReducer(wizardReducer, initialState);
 
-  const activeFields = schema.fields
-    .filter((field) => {
-      if (!field.dependent_on) return true;
-      return state.values[field.dependent_on.field_key] === field.dependent_on.value;
-    })
-    .sort((a, b) => a.display_order - b.display_order);
+  // Derive active steps based on logical conditions (if any fields in that step are active)
+  // For now, we assume all steps are active, but we could filter them if needed.
+  const activeSteps = (schema.steps || [])
+    .map(step => ({
+      ...step,
+      fields: step.fields
+        .filter(field => {
+          if (!field.dependent_on) return true;
+          return state.values[field.dependent_on.field_key] === field.dependent_on.value;
+        })
+        .sort((a, b) => a.display_order - b.display_order)
+    }))
+    .filter(step => step.fields.length > 0);
 
-  const currentField = activeFields[state.currentStep] ?? null;
-  const totalSteps = activeFields.length;
+  const currentStepData = activeSteps[state.currentStep] ?? null;
+  const totalSteps = activeSteps.length;
   const isLastStep = state.currentStep === totalSteps - 1;
+
+  // For summary and other derived logic, we still need a flat list of all active fields
+  const allActiveFields = activeSteps.flatMap(s => s.fields);
 
   /** Update a field value */
   const setFieldValue = useCallback((key: string, val: WizardFieldValue) => {
@@ -154,17 +164,20 @@ export function useWizardReducer(schema: CustomizationSchema) {
 
   /** Validate the current step. Returns true if valid. */
   const validateCurrentStep = useCallback((): boolean => {
-    if (!currentField) return true;
+    if (!currentStepData) return true;
 
-    dispatch({ type: "SET_TOUCHED", key: currentField.field_key });
+    let isValid = true;
+    currentStepData.fields.forEach(field => {
+       dispatch({ type: "SET_TOUCHED", key: field.field_key });
+       const error = validateField(field, state.values[field.field_key] ?? null, state.uploadedFiles);
+       if (error) {
+         dispatch({ type: "SET_ERROR", key: field.field_key, message: error });
+         isValid = false;
+       }
+    });
 
-    const error = validateField(currentField, state.values[currentField.field_key] ?? null, state.uploadedFiles);
-    if (error) {
-      dispatch({ type: "SET_ERROR", key: currentField.field_key, message: error });
-      return false;
-    }
-    return true;
-  }, [currentField, state.values, state.uploadedFiles]);
+    return isValid;
+  }, [currentStepData, state.values, state.uploadedFiles]);
 
   /** Navigate to a specific step (or -1 for summary) */
   const goToStep = useCallback((step: number) => {
@@ -201,8 +214,9 @@ export function useWizardReducer(schema: CustomizationSchema) {
 
   return {
     state,
-    activeFields,
-    currentField,
+    activeFields: allActiveFields,
+    activeSteps,
+    currentStepData,
     totalSteps,
     isLastStep,
     isSummaryReview: state.status === "summaryReview",
@@ -219,3 +233,4 @@ export function useWizardReducer(schema: CustomizationSchema) {
     reset,
   };
 }
+

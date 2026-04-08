@@ -29,11 +29,36 @@ const supportLinks = [
 
 export default function SiteFooter() {
   return (
-    <footer className="w-full bg-[var(--color-accent-navy)] text-white pt-20 pb-10 border-t border-white/5 relative overflow-hidden">
+    <footer className="w-full bg-[var(--color-accent-navy)] text-white pt-24 pb-10 border-t border-white/5 relative overflow-hidden">
       {/* Decorative background element */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/5 to-transparent pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10">
+        
+        {/* Newsletter / Lead Capture */}
+        <div className="flex flex-col md:flex-row items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-8 md:p-12 mb-20 backdrop-blur-sm">
+          <div className="max-w-xl mb-8 md:mb-0">
+            <h2 className="font-serif text-3xl font-bold text-white mb-3">Join the Private Ledger</h2>
+            <p className="text-white/60 font-light text-sm leading-relaxed max-w-md">
+              Receive exclusive access to limited-edition collections, sophisticated gifting advice, and 10% off your initial bespoke curation.
+            </p>
+          </div>
+          <form className="w-full md:w-auto flex flex-col sm:flex-row gap-4" onSubmit={(e) => e.preventDefault()}>
+            <input 
+              type="email" 
+              placeholder="Email Address" 
+              required
+              className="bg-transparent border border-white/20 text-white placeholder:text-white/40 px-6 py-4 rounded-sm focus:outline-none focus:border-white/60 focus:ring-1 focus:ring-white/60 min-w-[280px] luxury-transition"
+            />
+            <button 
+              type="submit"
+              className="bg-white text-[var(--color-accent-navy)] px-8 py-4 uppercase tracking-[0.2em] text-[10px] font-bold hover:bg-white/90 luxury-transition rounded-sm"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-20">
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-8">

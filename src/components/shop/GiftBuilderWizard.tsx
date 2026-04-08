@@ -128,10 +128,11 @@ export default function GiftBuilderWizard({
     schema.pricing_rules ?? []
   );
 
-  const {
+    const {
     state,
     activeFields,
-    currentField,
+    activeSteps,
+    currentStepData,
     totalSteps,
     isLastStep,
     isSummaryReview,
@@ -209,6 +210,10 @@ export default function GiftBuilderWizard({
                   if ((field.field_type === "color_swatch" || field.field_type === "scent_selector" || field.field_type === "ribbon_selector" || field.field_type === "dropdown") && val) {
                     displayVal = field.options?.find((o) => o.value === val)?.label ?? displayVal;
                   }
+                  
+                  // Find which step this field belongs to for editing
+                  const stepIndex = activeSteps.findIndex(s => s.fields.some(f => f.field_key === field.field_key));
+
                   return (
                     <div
                       key={field.field_key}
@@ -221,7 +226,7 @@ export default function GiftBuilderWizard({
                         <p className="text-sm font-medium text-slate-700 italic">{displayVal}</p>
                       </div>
                       <button
-                        onClick={() => goToStep(idx)}
+                        onClick={() => goToStep(stepIndex)}
                         className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-slate-300 hover:text-[#1A4338] transition-colors"
                       >
                         <Edit3 className="w-3 h-3" />
@@ -275,7 +280,7 @@ export default function GiftBuilderWizard({
       <div className="flex-grow p-8 md:p-12 bg-white relative flex flex-col">
         {/* Progress bar */}
         <div className="flex items-center gap-2 mb-10">
-          {activeFields.map((_, idx) => (
+          {activeSteps.map((_, idx) => (
             <div
               key={idx}
               className={cn(
@@ -296,17 +301,17 @@ export default function GiftBuilderWizard({
             Step {state.currentStep + 1} of {totalSteps}
           </p>
           <h2 className="font-serif text-3xl font-bold text-slate-800 tracking-tight">
-            {currentField?.label ?? "Customise your gift"}
+            {currentStepData?.title ?? "Customise your gift"}
           </h2>
-          {currentField?.description && (
+          {currentStepData?.description && (
             <p className="text-sm text-slate-500 leading-relaxed max-w-prose">
-              {currentField.description}
+              {currentStepData.description}
             </p>
           )}
         </div>
 
         {/* Dynamic field — animated transition */}
-        <div className="flex-grow min-h-[260px] relative">
+        <div className="flex-grow min-h-[300px] relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={state.currentStep}
@@ -314,30 +319,33 @@ export default function GiftBuilderWizard({
               initial="enter"
               animate="active"
               exit="exit"
-              className="space-y-6"
+              className="space-y-8"
             >
-              {currentField && (
-                <FieldRenderer
-                  field={currentField}
-                  value={state.values[currentField.field_key] ?? ""}
-                  error={state.touched[currentField.field_key] ? state.errors[currentField.field_key] : undefined}
-                  onChange={(val) => setFieldValue(currentField.field_key, val)}
-                  onBlur={() => touchField(currentField.field_key)}
-                  onUploadComplete={(key, url) => {
-                    setUpload(key, {
-                      file: new File([], "photo"),
-                      previewUrl: url,
-                      uploadStatus: "done",
-                      uploadedUrl: url,
-                    });
-                    setFieldValue(key, url);
-                  }}
-                  onUploadError={() => {}}
-                />
-              )}
+              {currentStepData?.fields.map((field) => (
+                <div key={field.field_key} className="space-y-2">
+                  <FieldRenderer
+                    field={field}
+                    value={state.values[field.field_key] ?? ""}
+                    error={state.touched[field.field_key] ? state.errors[field.field_key] : undefined}
+                    onChange={(val) => setFieldValue(field.field_key, val)}
+                    onBlur={() => touchField(field.field_key)}
+                    onUploadComplete={(key, url) => {
+                      setUpload(key, {
+                        file: new File([], "photo"),
+                        previewUrl: url,
+                        uploadStatus: "done",
+                        uploadedUrl: url,
+                      });
+                      setFieldValue(key, url);
+                    }}
+                    onUploadError={() => {}}
+                  />
+                </div>
+              ))}
             </motion.div>
           </AnimatePresence>
         </div>
+
 
         {/* Navigation bar */}
         <div className="flex items-center justify-between pt-8 mt-8 border-t border-slate-100">

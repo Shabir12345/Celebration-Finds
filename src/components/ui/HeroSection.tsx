@@ -11,6 +11,8 @@ export interface HeroSectionProps {
   subheadline: string;
   ctaText?: string;
   onCtaClick?: () => void;
+  secondaryCtaText?: string;
+  onSecondaryCtaClick?: () => void;
   imageUrl: string;
   hasOverlay?: boolean;
 }
@@ -21,6 +23,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   subheadline,
   ctaText = "Shop the Collection",
   onCtaClick,
+  secondaryCtaText,
+  onSecondaryCtaClick,
   imageUrl,
   hasOverlay = true,
 }) => {
@@ -78,20 +82,32 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </p>
             </motion.div>
             
-            <motion.div variants={itemVariants}>
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
               <Button 
                 size="lg" 
                 variant="primary" 
                 onClick={onCtaClick}
                 className="group relative overflow-hidden bg-[var(--color-accent-navy)] text-white hover:bg-[var(--color-accent-navy)]/90 luxury-transition shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   {ctaText}
                   <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </span>
               </Button>
+              {secondaryCtaText && (
+                <Button 
+                  size="lg" 
+                  variant="ghost" 
+                  onClick={onSecondaryCtaClick}
+                  className="group relative border border-[var(--color-border-subtle)] hover:border-[var(--color-text-primary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] luxury-transition"
+                >
+                  <span className="relative z-10 flex items-center justify-center">
+                    {secondaryCtaText}
+                  </span>
+                </Button>
+              )}
             </motion.div>
             
             {/* Trust Badges */}
@@ -180,19 +196,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {subheadline}
         </motion.p>
         
-        <motion.div variants={itemVariants}>
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4">
           <Button 
             size="lg" 
-            className="group relative bg-white text-[var(--color-accent-navy)] hover:bg-white/95 luxury-transition shadow-2xl hover:-translate-y-1 px-10" 
+            className="group relative bg-white text-[var(--color-accent-navy)] hover:bg-white/95 luxury-transition shadow-2xl hover:-translate-y-1 px-10 min-w-[240px]" 
             onClick={onCtaClick}
           >
-            <span className="relative z-10 flex items-center gap-3">
+            <span className="relative z-10 flex items-center justify-center gap-3">
               {ctaText}
               <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </span>
           </Button>
+          {secondaryCtaText && (
+            <Button 
+              size="lg" 
+              variant="ghost" 
+              className="group relative border border-white/60 text-white hover:bg-white/10 hover:border-white luxury-transition px-10 min-w-[240px]" 
+              onClick={onSecondaryCtaClick}
+            >
+              <span className="relative z-10 flex items-center justify-center">
+                {secondaryCtaText}
+              </span>
+            </Button>
+          )}
         </motion.div>
 
         {/* Center-aligned Trust Badges for Full Bleed */}

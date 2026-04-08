@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { PortfolioEvent } from "@/types/portfolio";
+import { PortfolioEntry, DESIGN_CATEGORY_LABELS } from "@/types/portfolio";
 import { cn } from "@/lib/utils";
 
 interface PortfolioCardProps {
-  event: PortfolioEvent;
-  onSelect: (event: PortfolioEvent) => void;
+  event: PortfolioEntry;
+  onSelect: (entry: PortfolioEntry) => void;
   imageUrl: string;
   spanSize?: "1x1" | "1x2" | "2x2";
 }
@@ -49,10 +49,10 @@ export default function PortfolioCard({
         variants={{ hover: { opacity: 1 } }}
         initial={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center gap-3 p-6"
+        className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex flex-col items-center justify-center gap-3 p-6"
       >
-        <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/70">
-          {event.eventType.replace("-", " ")}
+        <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-secondary">
+          {DESIGN_CATEGORY_LABELS[event.category]}
         </span>
         <h3 className="font-serif text-2xl md:text-3xl text-white text-center leading-tight">
           {event.title}
@@ -65,8 +65,8 @@ export default function PortfolioCard({
             })}
           </span>
         )}
-        <div className="mt-2 px-5 py-2 border border-white/60 text-white text-[10px] font-bold uppercase tracking-widest">
-          View Event
+        <div className="mt-2 px-6 py-3 border border-white/40 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-colors">
+          View Design
         </div>
       </motion.div>
     </motion.div>
