@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Sparkles, Droplet, Type } from "lucide-react";
 import { Button } from "./Button";
@@ -159,10 +160,12 @@ export const GiftBuilderCarousel = () => {
           >
             {/* The base gift image */}
             <div className="relative z-10 w-full h-full flex items-center justify-center drop-shadow-2xl">
-               <img 
+               <Image 
                  src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1080&auto=format&fit=crop" 
                  alt="Gift Box"
-                 className="w-[80%] h-[80%] object-cover rounded shadow-lg mix-blend-multiply transition-opacity duration-500"
+                 fill
+                 className="object-cover rounded shadow-lg mix-blend-multiply transition-opacity duration-500"
+                 sizes="(max-width: 1080px) 100vw, 450px"
                />
             </div>
             

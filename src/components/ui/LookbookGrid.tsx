@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export interface PortfolioCardProps {
@@ -25,11 +26,12 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = ({
   return (
     <div className={cn("group relative w-full h-full overflow-hidden cursor-pointer", sizeClasses[size])}>
       {/* Editorial Image */}
-      <img
+      <Image
         src={imageUrl}
         alt={title}
-        loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] group-hover:scale-105"
+        fill
+        className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] group-hover:scale-105"
+        sizes="(max-width: 1024px) 50vw, 25vw"
       />
       
       {/* Overlays */}

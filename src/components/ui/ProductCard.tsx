@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
@@ -58,26 +59,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         onMouseLeave={handlePointerLeave}
       >
         <div className="w-full md:w-1/3 aspect-[4/3] md:aspect-square relative overflow-hidden rounded-[2px] bg-[var(--color-bg-tertiary)]">
-          <img
+          <Image
             src={primaryImage}
             alt={title}
-            loading="lazy"
-            className="w-full h-full object-cover luxury-transition group-hover:scale-105"
+            fill
+            className="object-cover luxury-transition group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 33vw"
           />
           {hoverImage && (
-            <img
+            <Image
               src={hoverImage}
               alt={`${title} Lifestyle`}
-              loading="lazy"
+              fill
               className={cn(
-                "absolute inset-0 w-full h-full object-cover luxury-transition",
+                "object-cover luxury-transition",
                 isHovered ? "opacity-100 scale-100" : "opacity-0 scale-95"
               )}
+              sizes="(max-width: 768px) 100vw, 33vw"
             />
           )}
           {badge && (
             <span className={cn(
-              "absolute top-3 left-3 backdrop-blur-sm px-3 py-1 text-[10px] uppercase tracking-widest font-bold shadow-sm",
+              "absolute top-3 left-3 backdrop-blur-sm px-3 py-1 text-[10px] uppercase tracking-widest font-bold shadow-sm z-10",
               badge === "Best Seller" ? "bg-[var(--color-accent-gold)] text-white" :
               badge === "Low Stock" ? "bg-[var(--color-status-error)] text-white animate-pulse" :
               badge === "Limited Edition" ? "bg-[var(--color-accent-navy)] text-white" :
@@ -123,21 +126,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     >
       <div className="relative w-full aspect-[4/5] overflow-hidden mb-4 bg-[var(--color-bg-tertiary)] rounded-[2px]">
         {/* Images */}
-        <img
+        <Image
           src={primaryImage}
           alt={title}
-          loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] group-hover:scale-105"
+          fill
+          className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] group-hover:scale-105"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
         {hoverImage && (
-          <img
+          <Image
             src={hoverImage}
             alt={`${title} Lifestyle`}
-            loading="lazy"
+            fill
             className={cn(
-              "absolute inset-0 w-full h-full object-cover transition-opacity duration-[600ms] ease-[cubic-bezier(0.25,0.1,0.25,1.0)]",
+              "object-cover transition-opacity duration-[600ms] ease-[cubic-bezier(0.25,0.1,0.25,1.0)]",
               isHovered ? "opacity-100" : "opacity-0"
             )}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
         )}
         

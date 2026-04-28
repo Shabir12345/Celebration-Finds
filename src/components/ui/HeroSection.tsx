@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
@@ -10,9 +11,9 @@ export interface HeroSectionProps {
   headline: string;
   subheadline: string;
   ctaText?: string;
-  onCtaClick?: () => void;
+  ctaHref?: string;
   secondaryCtaText?: string;
-  onSecondaryCtaClick?: () => void;
+  secondaryCtaHref?: string;
   imageUrl: string;
   hasOverlay?: boolean;
 }
@@ -22,9 +23,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   headline,
   subheadline,
   ctaText = "Shop the Collection",
-  onCtaClick,
+  ctaHref,
   secondaryCtaText,
-  onSecondaryCtaClick,
+  secondaryCtaHref,
   imageUrl,
   hasOverlay = true,
 }) => {
@@ -86,7 +87,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <Button 
                 size="lg" 
                 variant="primary" 
-                onClick={onCtaClick}
+                onClick={() => ctaHref && (window.location.href = ctaHref)}
                 className="group relative overflow-hidden bg-[var(--color-accent-navy)] text-white hover:bg-[var(--color-accent-navy)]/90 luxury-transition shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
@@ -100,7 +101,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <Button 
                   size="lg" 
                   variant="ghost" 
-                  onClick={onSecondaryCtaClick}
+                  onClick={() => secondaryCtaHref && (window.location.href = secondaryCtaHref)}
                   className="group relative border border-[var(--color-border-subtle)] hover:border-[var(--color-text-primary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] luxury-transition"
                 >
                   <span className="relative z-10 flex items-center justify-center">
@@ -128,12 +129,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Right Image Parallax Box */}
         <div className="w-full md:w-1/2 h-[60vh] md:h-auto relative overflow-hidden bg-[var(--color-bg-tertiary)]">
           {mounted && (
-            <motion.img
-              style={{ y: yOffset }}
-              src={imageUrl}
-              alt={headline}
-              className="absolute inset-[-10%] w-[120%] h-[120%] object-cover object-center"
-            />
+            <motion.div style={{ y: yOffset }} className="absolute inset-[-10%] w-[120%] h-[120%]">
+              <Image
+                src={imageUrl}
+                alt={headline}
+                fill
+                priority
+                className="object-cover object-center"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </motion.div>
           )}
           {hasOverlay && <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-text-primary)]/40 via-transparent to-transparent mix-blend-multiply" />}
           
@@ -164,7 +169,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     <section className="relative w-full h-[95vh] flex items-center justify-center overflow-hidden bg-[var(--color-bg-primary)]">
       {mounted && (
         <motion.div style={{ y: yOffset }} className="absolute inset-0 w-full h-[120%]">
-          <img src={imageUrl} alt={headline} className="w-full h-full object-cover object-center" />
+          <Image 
+            src={imageUrl} 
+            alt={headline} 
+            fill 
+            priority
+            className="object-cover object-center" 
+            sizes="100vw"
+          />
         </motion.div>
       )}
       
@@ -200,7 +212,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <Button 
             size="lg" 
             className="group relative bg-white text-[var(--color-accent-navy)] hover:bg-white/95 luxury-transition shadow-2xl hover:-translate-y-1 px-10 min-w-[240px]" 
-            onClick={onCtaClick}
+            onClick={() => ctaHref && (window.location.href = ctaHref)}
           >
             <span className="relative z-10 flex items-center justify-center gap-3">
               {ctaText}
@@ -214,7 +226,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               size="lg" 
               variant="ghost" 
               className="group relative border border-white/60 text-white hover:bg-white/10 hover:border-white luxury-transition px-10 min-w-[240px]" 
-              onClick={onSecondaryCtaClick}
+              onClick={() => secondaryCtaHref && (window.location.href = secondaryCtaHref)}
             >
               <span className="relative z-10 flex items-center justify-center">
                 {secondaryCtaText}

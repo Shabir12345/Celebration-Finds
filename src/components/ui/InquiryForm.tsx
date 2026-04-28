@@ -8,7 +8,7 @@ import { Sparkles, Send, CheckCircle2, MessageSquareHeart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface InquiryFormProps {
-  onSubmit: (data: Record<string, string>) => Promise<void>;
+  onSubmit?: (data: Record<string, string>) => Promise<void>;
 }
 
 export const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmit }) => {
@@ -29,7 +29,16 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmit }) => {
     setIsSubmitting(true);
     
     try {
-      await onSubmit(formData);
+      if (onSubmit) {
+        await onSubmit(formData);
+      } else {
+        const response = await fetch("/api/inquiry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+        if (!response.ok) throw new Error("Failed to send inquiry");
+      }
       setIsSuccess(true);
       setFormData({ name: "", email: "", eventDate: "", guestCount: "", details: "" });
     } catch (error) {
