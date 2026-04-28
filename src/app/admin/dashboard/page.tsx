@@ -70,7 +70,7 @@ export default function DashboardPage() {
     },
     {
       label: 'Revenue',
-      value: `$${stats.revenue.toFixed(2)}`,
+      value: `$${Number(stats.revenue || 0).toFixed(2)}`,
       icon: '◈',
       gradient: 'from-emerald-500 to-teal-600',
       href: '/admin/dashboard/analytics',

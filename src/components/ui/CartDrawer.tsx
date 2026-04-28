@@ -89,7 +89,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <div className="flex items-center justify-between mb-2 text-xs font-medium tracking-wide">
                     {amountAway > 0 ? (
                       <span className="text-[var(--color-text-secondary)]">
-                        You're <span className="font-bold text-[var(--color-accent-emerald)]">{currencySymbol}{amountAway.toFixed(2)}</span> away from complimentary shipping.
+                        You're <span className="font-bold text-[var(--color-accent-emerald)]">{currencySymbol}{Number(amountAway || 0).toFixed(2)}</span> away from complimentary shipping.
                       </span>
                     ) : (
                       <span className="font-bold text-[var(--color-accent-emerald)] flex items-center gap-1.5">
@@ -134,7 +134,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       <div className="flex-1 flex flex-col">
                         <div className="flex justify-between items-start">
                           <h4 className="text-[16px] font-serif font-medium text-[var(--color-text-primary)]">{item.name}</h4>
-                          <span className="font-sans font-medium text-[var(--color-text-primary)]">{currencySymbol}{(item.price * item.quantity).toFixed(2)}</span>
+                          <span className="font-sans font-medium text-[var(--color-text-primary)]">{currencySymbol}{Number((item.price || 0) * (item.quantity || 0)).toFixed(2)}</span>
                         </div>
                         
                         <div className="mt-2 flex flex-col space-y-1">
@@ -187,7 +187,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="p-6 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border-subtle)] shrink-0">
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-[16px] text-[var(--color-text-secondary)]">Subtotal</span>
-                  <span className="text-h3 font-serif">{currencySymbol}{subtotal.toFixed(2)}</span>
+                  <span className="text-h3 font-serif">{currencySymbol}{Number(subtotal || 0).toFixed(2)}</span>
                 </div>
                 <Button variant="primary" size="lg" className="w-full bg-[var(--color-accent-emerald)] text-white hover:brightness-110 shadow-lg hover:shadow-xl mb-4" onClick={onCheckout}>
                   Secure Checkout

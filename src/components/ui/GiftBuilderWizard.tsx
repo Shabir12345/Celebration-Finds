@@ -241,7 +241,7 @@ export const GiftBuilderWizard: React.FC<GiftBuilderWizardProps> = ({
                    animate={{ opacity: 1, y: 0 }}
                    className="text-h4 font-serif text-[var(--color-text-primary)]"
                  >
-                   ${formattedLineItems.reduce((acc, i) => acc + (i.priceAdded || 0), basePrice).toFixed(2)}
+                    ${(formattedLineItems.reduce((acc, i) => acc + (i.priceAdded || 0), Number(basePrice || 0))).toFixed(2)}
                  </motion.span>
                </AnimatePresence>
              </div>

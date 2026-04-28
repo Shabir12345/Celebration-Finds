@@ -30,7 +30,7 @@ export const fadeVariants = {
 export const shakeVariants = {
   shake: {
     x: [0, -8, 8, -4, 4, 0],
-    transition: { duration: 0.4, ease: "easeInOut" as const },
+    transition: { duration: 0.4, ease: [0.42, 0, 0.58, 1] as const },
   },
 };
 

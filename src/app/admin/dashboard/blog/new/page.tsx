@@ -100,7 +100,7 @@ export default function PostFormPage({ params }: PostFormProps) {
     uploadData.append('file', file)
 
     const res = await uploadBlogImage(uploadData)
-    if (res.success) {
+    if (res.success && res.asset) {
       setFormData((prev: any) => ({
         ...prev,
         mainImage: {

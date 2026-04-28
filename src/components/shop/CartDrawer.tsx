@@ -32,7 +32,7 @@ function FreeShippingBar({ total }: { total: number }) {
         {pct >= 100 ? (
           <span className="text-[#1A4338]">🎉 You&apos;ve unlocked free shipping!</span>
         ) : (
-          <>Add <strong className="text-slate-700">${remaining.toFixed(2)}</strong> more for free shipping</>
+          <>Add <strong className="text-slate-700">${Number(remaining || 0).toFixed(2)}</strong> more for free shipping</>
         )}
       </p>
     </div>
@@ -118,7 +118,7 @@ function CartItemRow({
           </div>
 
           <span className="font-serif text-base font-medium text-slate-800">
-            ${(item.price * item.quantity).toFixed(2)}
+            ${Number((item.price || 0) * (item.quantity || 0)).toFixed(2)}
           </span>
         </div>
       </div>
@@ -272,7 +272,7 @@ export default function CartDrawer() {
                     Subtotal
                   </span>
                   <span className="font-serif text-2xl font-medium text-slate-800">
-                    ${totalPrice.toFixed(2)}
+                    ${Number(totalPrice || 0).toFixed(2)}
                   </span>
                 </div>
                 <p className="text-[9px] text-slate-400 uppercase tracking-widest font-bold">

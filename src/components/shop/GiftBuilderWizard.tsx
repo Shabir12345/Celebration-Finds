@@ -360,7 +360,7 @@ export default function GiftBuilderWizard({
 
           {/* Live unit price badge */}
           <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-            ${pricing.unitPrice.toFixed(2)} each
+            ${Number(pricing.unitPrice || 0).toFixed(2)} each
           </span>
 
           <button

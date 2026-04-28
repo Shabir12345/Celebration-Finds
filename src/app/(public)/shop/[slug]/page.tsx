@@ -108,7 +108,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               </h1>
             </div>
             <div className="flex flex-col md:items-end">
-               <span className="font-serif text-3xl font-bold text-accent">${basePrice.toFixed(2)}</span>
+               <span className="font-serif text-3xl font-bold text-accent">${Number(basePrice || 0).toFixed(2)}</span>
                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2">Starting at</span>
             </div>
           </div>

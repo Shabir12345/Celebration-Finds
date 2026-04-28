@@ -107,7 +107,7 @@ export default function LiveOrderSummary({
         {/* Base price */}
         <div className="flex justify-between text-xs text-slate-500">
           <span className="font-medium">Base price</span>
-          <span>${pricing.basePrice.toFixed(2)} / item</span>
+          <span>${Number(pricing.basePrice || 0).toFixed(2)} / item</span>
         </div>
 
         {/* Option modifiers */}
@@ -122,7 +122,7 @@ export default function LiveOrderSummary({
               className="flex justify-between text-xs text-slate-500"
             >
               <span className="font-medium">{mod.label}</span>
-              <span className="text-[#1A4338]">+${mod.amount.toFixed(2)}</span>
+              <span className="text-[#1A4338]">+${Number(mod.amount || 0).toFixed(2)}</span>
             </motion.div>
           ))}
         </AnimatePresence>
@@ -137,7 +137,7 @@ export default function LiveOrderSummary({
           >
             <span className="text-green-700 font-medium">{pricing.quantityDiscount.label}</span>
             <span className="text-green-700">
-              −${Math.abs(pricing.quantityDiscount.amount).toFixed(2)}
+              −${Math.abs(Number(pricing.quantityDiscount?.amount || 0)).toFixed(2)}
             </span>
           </motion.div>
         )}
@@ -155,11 +155,11 @@ export default function LiveOrderSummary({
               transition={{ duration: 0.2 }}
               className="font-serif text-2xl font-medium text-slate-800"
             >
-              ${pricing.total.toFixed(2)}
+              ${Number(pricing.total || 0).toFixed(2)}
             </motion.span>
           </div>
           <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mt-1">
-            ${pricing.unitPrice.toFixed(2)} per item · 25 item minimum
+            ${Number(pricing.unitPrice || 0).toFixed(2)} per item · 25 item minimum
           </p>
         </div>
       </div>

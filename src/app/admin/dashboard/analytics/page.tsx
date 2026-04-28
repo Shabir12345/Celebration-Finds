@@ -30,7 +30,7 @@ function BarChart({ data }: { data: { label: string; value: number }[] }) {
               style={{ width: `${(d.value / max) * 100}%` }}
             />
           </div>
-          <div className="bar-value">${d.value.toFixed(0)}</div>
+          <div className="bar-value">${Number(d.value || 0).toFixed(0)}</div>
         </div>
       ))}
     </div>
@@ -175,9 +175,9 @@ export default function AnalyticsPage() {
       {/* KPI row */}
       <div className="kpi-row">
         {[
-          { label: 'Total Revenue',   value: `$${totalRevenue.toFixed(2)}`, icon: '◈', color: '#4ade80' },
+          { label: 'Total Revenue',   value: `$${Number(totalRevenue || 0).toFixed(2)}`, icon: '◈', color: '#4ade80' },
           { label: 'Total Orders',    value: orders.length.toString(),      icon: '◎', color: '#818cf8' },
-          { label: 'Avg. Order Value',value: `$${avgOrder.toFixed(2)}`,     icon: '⟨⟩',color: '#38bdf8' },
+          { label: 'Avg. Order Value',value: `$${Number(avgOrder || 0).toFixed(2)}`,     icon: '⟨⟩',color: '#38bdf8' },
           { label: 'Delivered',       value: statusCounts[3].value.toString(), icon: '✓', color: '#fbbf24' },
         ].map(k => (
           <div key={k.label} className="kpi-card">
@@ -228,7 +228,7 @@ export default function AnalyticsPage() {
                     <span className="prod-name">{p.product_name}</span>
                   </td>
                   <td className="cell-qty">{p.total}</td>
-                  <td className="cell-amount">${p.revenue.toFixed(2)}</td>
+                  <td className="cell-amount">${Number(p.revenue || 0).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>

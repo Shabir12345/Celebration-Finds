@@ -52,7 +52,7 @@ export const LiveOrderSummary: React.FC<LiveOrderSummaryProps> = ({
       <div className="p-6 flex-1 flex flex-col space-y-4">
         <div className="flex justify-between items-center pb-4 border-b border-dashed border-[var(--color-border-subtle)]">
           <span className="text-body-m font-medium text-[var(--color-text-primary)]">Base Price</span>
-          <span className="text-body-m text-[var(--color-text-secondary)]">{currencySymbol}{basePrice.toFixed(2)}</span>
+          <span className="text-body-m text-[var(--color-text-secondary)]">{currencySymbol}{Number(basePrice || 0).toFixed(2)}</span>
         </div>
 
         <div className="flex flex-col space-y-3 min-h-[120px]">
@@ -75,7 +75,7 @@ export const LiveOrderSummary: React.FC<LiveOrderSummaryProps> = ({
                 </div>
                 {item.priceAdded && item.priceAdded > 0 ? (
                   <span className="text-[var(--color-text-primary)]">
-                    +{currencySymbol}{item.priceAdded.toFixed(2)}
+                    +{currencySymbol}{Number(item.priceAdded || 0).toFixed(2)}
                   </span>
                 ) : (
                   <span className="text-[var(--color-text-tertiary)] text-[12px] uppercase tracking-wider">
@@ -108,7 +108,7 @@ export const LiveOrderSummary: React.FC<LiveOrderSummaryProps> = ({
             animate={{ scale: 1, color: "var(--color-text-primary)" }}
             className="text-h3 font-serif font-medium"
           >
-            {currencySymbol}{totalPrice.toFixed(2)}
+            {currencySymbol}{Number(totalPrice || 0).toFixed(2)}
           </motion.span>
         </div>
         

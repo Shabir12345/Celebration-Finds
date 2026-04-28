@@ -28,7 +28,7 @@ export function usePricing(
       }
     }
 
-    const unitPrice = basePrice + modifiers.reduce((sum, m) => sum + m.amount, 0);
+    const unitPrice = (basePrice || 0) + modifiers.reduce((sum, m) => sum + (m.amount || 0), 0);
     const subtotal = Math.max(0, unitPrice * quantity);
 
     // 2. Find best applicable quantity-tier discount
@@ -39,11 +39,11 @@ export function usePricing(
     const discountAmount = tierRule ? subtotal * ((tierRule.discount_pct ?? 0) / 100) : 0;
 
     return {
-      basePrice,
-      modifiers,
-      quantity,
-      unitPrice,
-      subtotal,
+      basePrice: basePrice || 0,
+      modifiers: modifiers.map(m => ({ ...m, amount: m.amount || 0 })),
+      quantity: quantity || 0,
+      unitPrice: unitPrice || 0,
+      subtotal: subtotal || 0,
       quantityDiscount: tierRule
         ? {
             label: `${tierRule.discount_pct}% bulk discount (${tierRule.min_qty}+ items)`,

@@ -16,21 +16,5 @@ export const writeClient = createClient({
   token,
 });
 
-export async function uploadBlogImage(formData: FormData) {
-  const file = formData.get('file') as File;
-  if (!file) return { success: false, error: 'No file provided' };
 
-  try {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const asset = await writeClient.assets.upload('image', buffer, {
-      filename: file.name,
-      contentType: file.type,
-    });
-    return { success: true, asset };
-  } catch (error: any) {
-    console.error('Asset upload error:', error);
-    return { success: false, error: error.message };
-  }
-}
 

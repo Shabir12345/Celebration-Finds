@@ -280,7 +280,7 @@ export default function OrderManagementPage() {
                          <span className="li-name">{item.product_name}</span>
                          <span className="li-qty">Qty: {item.quantity}</span>
                        </div>
-                       <span className="li-total">${(item.quantity * item.unit_price).toFixed(2)}</span>
+                       <span className="li-total">${Number((item.quantity || 0) * (item.unit_price || 0)).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
